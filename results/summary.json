@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "description": "56-quarter QAOA portfolio backtest 2010–2024",
+    "methodology": "Dynamic top-15 universe by Sharpe, 5-year lookback, quarterly rebalance",
+    "qaoa_config": {
+      "p_layers": 2,
+      "n_seeds": 3,
+      "shots_count": 2000,
+      "optimizer": "COBYLA",
+      "maxiter": 150,
+      "zz_decomposition": "cx-rz-cx"
+    },
+    "gpu": "NVIDIA L4 (Google Colab)",
+    "framework": "CUDA-Q 0.8",
+    "run_date": "2026-04"
+  },
+  "headline_numbers": {
+    "qaoa_vs_spy_win_rate": 1.00,
+    "qaoa_vs_spy_median_alpha": 0.9525,
+    "qaoa_vs_equal_weight_win_rate": 0.75,
+    "qaoa_vs_equal_weight_median_alpha": 0.031,
+    "mean_sampling_efficiency_vs_random": 1860,
+    "gpu_speedup_vs_cpu": 12.4
+  },
+  "honest_limitations": [
+    "QAOA trails top-N optimal-weight baseline (lookahead bias in that baseline)",
+    "p=2 QAOA depth is shallow; deeper circuits may improve results",
+    "L4 GPU simulation is classical — not a real quantum device",
+    "Backtest covers a bull market era; drawdown characteristics untested"
+  ],
+  "windows_summary": "56 quarterly windows, Q1 2010 through Q4 2024"
+}

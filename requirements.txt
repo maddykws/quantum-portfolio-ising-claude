@@ -1,0 +1,11 @@
+cudaq
+anthropic
+numpy
+pandas
+scipy
+yfinance
+matplotlib
+jupyter
+notebook
+ipykernel
+requests

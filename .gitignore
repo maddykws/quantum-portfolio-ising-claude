@@ -1,0 +1,39 @@
+# API keys — never commit these
+.env
+*.env
+secrets.py
+config_secret.py
+
+# Colab credentials
+/content/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Large data and result files
+*.csv
+results_56w*.json
+results_56w_p2*.json
+results_56w_v3*.json
+circuit_trajectory.json
+ising_calibration_56w.json
+qcaleval_3pipeline.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

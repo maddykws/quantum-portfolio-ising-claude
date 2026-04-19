@@ -7,6 +7,11 @@
 
 ---
 
+<img width="1783" height="593" alt="figure_gpu_scaling" src="https://github.com/user-attachments/assets/5970d40a-bd50-4af2-939b-63f6e7e48bad" />
+<img width="1633" height="734" alt="figure_qcaleval_3pipeline" src="https://github.com/user-attachments/assets/a6e55f4e-b9a9-4c76-99a0-3eeff57573d6" />
+<img width="1934" height="740" alt="figure_topn_disclosure" src="https://github.com/user-attachments/assets/49b6a160-7952-42d7-a36f-84240c818d85" />
+
+
 ## The headline
 
 Portfolio selection maps directly to Ising-form optimisation. The QUBO

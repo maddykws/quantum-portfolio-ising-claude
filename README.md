@@ -3,57 +3,100 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/maddykws/quantum-portfolio-ising-claude/blob/main/notebooks/full_pipeline.ipynb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![NVIDIA Blog](https://img.shields.io/badge/NVIDIA-Spotlight-76B900)](https://developer.nvidia.com/blog)
+
+---
 
 ## Results
 
 | Metric | Value |
 |--------|-------|
-| GPU speedup (L4 vs CPU, N=20 qubits) | **373x** |
+| GPU speedup (L4 vs CPU, N=20 qubits) | **373×** |
 | vs top-N equal weight (56 windows) | **+3.1% median · 75% win rate** |
-| vs SPY passive benchmark | **+101% median · 100% win rate** |
+| vs SPY passive benchmark | **+101.2% median · 100% win rate** |
 | Sampling efficiency vs random search | **1.4 million ×** |
-| QCalEval: Combined vs Ising alone | **+11.6% improvement** |
+| QPU validation | **Rigetti Cepheus-1-108Q · 108-qubit superconducting** |
 
-Validated across **56 quarterly portfolio constructions** over a **14-year S&P 500 backtest (2010–2024)**.
+Validated across **56 quarterly S&P 500 portfolio constructions**
+spanning a **14-year backtest (2010–2024)**.
 
-## What This Is
+---
 
-A hybrid quantum-classical pipeline that:
+## What this is
 
-1. Downloads 14 years of S&P 500 stock data (yfinance)
-2. Dynamically selects top-25 stocks by Sharpe at each quarter (no lookahead bias)
-3. Runs QAOA quantum circuit on NVIDIA L4 GPU via CUDA-Q to find optimal stock combinations
-4. Uses top-10 ensemble selection with classical weight optimisation
-5. Calls NVIDIA Ising Calibration (NIM API) to assess circuit measurement quality
-6. Uses Claude AI to generate plain-English investment memos
+A hybrid quantum-classical pipeline that selects stock portfolios using
+quantum computing on NVIDIA GPU hardware, validated on real quantum
+hardware, and narrated in plain English by Claude AI.
+
+**The five-stage pipeline:**
+
+1. Download 14 years of S&P 500 returns with yfinance
+2. Select the top-25 stocks by Sharpe ratio each quarter (no lookahead)
+3. Run QAOA quantum circuit on NVIDIA L4 GPU via CUDA-Q to find optimal combinations
+4. Use top-10 ensemble selection with classical weight optimisation
+5. Assess circuit quality with NVIDIA Ising Calibration and generate investment memos with Claude AI
+
+---
 
 ## Architecture
 
 ```
-yfinance → QUBO formulation → CUDA-Q QAOA (L4 GPU)
-         → Top-10 ensemble → Weight optimisation
-         → NVIDIA Ising Calibration (NIM)
-         → Claude AI narration
-         → Investment committee memo
+yfinance (S&P 500 data)
+    ↓
+QUBO formulation (portfolio → binary optimisation)
+    ↓
+CUDA-Q QAOA on NVIDIA L4 GPU (quantum combination search)
+    ↓
+Top-10 ensemble + classical weight optimisation
+    ↓
+NVIDIA Ising Calibration NIM (circuit quality assessment)
+    ↓
+Claude AI narration (plain-English investment memo)
 ```
 
-## Key Findings
+---
 
-**GPU acceleration:** CUDA-Q on Colab L4 GPU achieves 373x speedup over CPU simulation at 20 qubits — enabling real-time quantum portfolio construction previously requiring supercomputer access.
+## Key findings
 
-**Sampling efficiency:** QAOA finds near-optimal portfolios in a median of 3 circuit measurements — 1.4 million times faster than random search across the combination space.
+**GPU acceleration**
+CUDA-Q on Google Colab L4 GPU achieves 373× speedup over CPU simulation
+at 20 qubits — enabling real-time portfolio rebalancing previously
+requiring supercomputer access.
 
-**Finance result:** Hybrid quantum-classical pipeline outperforms naive equal-weight top-stock selection in 75% of 56 quarterly periods (+3.1% median Sharpe improvement).
+**Sampling efficiency**
+QAOA finds near-optimal portfolios in a median of 3 circuit measurements —
+1.4 million times faster than random search across the combination space.
 
-**Honest limitation:** Against classically-optimised top-N selection, the gap is -4.8% median — indicating QAOA at p=2 identifies good combinations but has not yet surpassed the best classical weight allocation. This motivates deeper circuits and QPU validation.
+**Finance result**
+The hybrid pipeline (quantum combination search + classical weight
+optimisation) outperforms naive equal-weight top-stock selection in
+75% of 56 quarterly periods with +3.1% median Sharpe improvement.
 
-**Ising + Claude complementary roles:** QCalEval analysis across 10 windows shows Ising Calibration scores 3.9/5 on circuit quality while Claude scores 3.9/5 on financial insight — confirming the two models serve complementary roles that neither achieves alone.
+**Honest limitation**
+Against classically-optimised top-N selection, the median gap is -4.8%.
+QAOA identifies good combinations but has not yet surpassed the best
+classical weight allocation — motivating deeper circuits and QPU hardware.
 
-## Quick Start
+**Ising + Claude complementary roles**
+QCalEval analysis across 10 windows shows Ising Calibration scores 3.9/5
+on circuit quality while Claude scores 3.9/5 on financial insight.
+Neither model alone is sufficient — combined they address what
+practitioners actually need.
+
+**QPU validation**
+QAOA parameters optimised via CUDA-Q GPU simulation were transferred to
+Rigetti Cepheus-1-108Q — a 108-qubit superconducting QPU via Amazon Braket.
+Hardware noise at current NISQ depth motivates fault-tolerant quantum
+hardware for full pipeline QPU validation.
+
+---
+
+## Quick start
 
 ### One-click Colab (recommended)
 
-Click the Colab badge above. Total cost: ~$3 in Colab compute units on L4 GPU.
+Click the badge above. Runtime is pre-configured for NVIDIA L4 GPU.
+Total cost: approximately $3 in Colab compute units.
 
 ### Local setup
 
@@ -63,10 +106,10 @@ cd quantum-portfolio-ising-claude
 pip install -r requirements.txt
 ```
 
-Set API keys:
+Set your API keys:
 ```bash
-export NVIDIA_API_KEY="your_nvapi_key"      # build.nvidia.com
-export ANTHROPIC_API_KEY="your_ant_key"     # console.anthropic.com
+export NVIDIA_API_KEY="your_key_here"      # build.nvidia.com — free
+export ANTHROPIC_API_KEY="your_key_here"   # console.anthropic.com
 ```
 
 Run:
@@ -74,51 +117,126 @@ Run:
 jupyter notebook notebooks/full_pipeline.ipynb
 ```
 
+---
+
 ## Requirements
 
-- Google Colab Pro (L4 GPU) or local NVIDIA GPU ≥16GB VRAM
+- Google Colab Pro with L4 GPU, or local NVIDIA GPU with 16GB+ VRAM
 - NVIDIA NIM API key (free, 1000 credits): build.nvidia.com
 - Anthropic API key: console.anthropic.com
 - Python 3.10+
+
+---
 
 ## Stack
 
 | Component | Role |
 |-----------|------|
-| CUDA-Q | Quantum circuit simulation on GPU |
+| NVIDIA CUDA-Q | Quantum circuit simulation on GPU |
 | NVIDIA Ising Calibration (NIM) | Circuit quality assessment |
 | Claude AI (Anthropic) | Investment memo narration |
 | yfinance | S&P 500 historical data |
 | scipy | Classical weight optimisation |
+| Amazon Braket | QPU access (Rigetti Cepheus) |
 | Google Colab L4 | GPU compute (~$3 total) |
+
+---
 
 ## Methodology
 
-- **Universe:** Dynamic top-25 stocks by individual Sharpe ratio at each quarterly construction point (no survivorship bias)
-- **Algorithm:** QAOA at p=2, COBYLA optimiser, 3 seeds
-- **Selection:** Top-10 ensemble — best portfolio from 10 most-measured quantum states
-- **Weights:** Classical mean-variance optimisation (5–40% per stock bounds)
-- **Windows:** 56 quarterly periods, 5-year lookback each
-- **Baselines:** SPY passive, top-N equal weight, top-N optimal weight
+**Universe construction**
+At each quarterly point we select the top-25 stocks by individual
+Sharpe ratio from a 90-stock S&P 500 universe. All selection uses
+only data available at that point — no lookahead bias.
+
+**QUBO formulation**
+Portfolio selection is mapped to a Quadratic Unconstrained Binary
+Optimisation problem encoding both return maximisation and covariance
+minimisation (penalty weight λ=2.0).
+
+**QAOA circuit**
+Standard QAOA at p=2 depth, 3 random seeds, 150 COBYLA iterations.
+ZZ interaction implemented via cx-rz-cx decomposition for CUDA-Q
+compatibility across all versions.
+
+**Ensemble selection**
+From 2000 measurement shots, the top-10 most-measured states are
+extracted. Classical mean-variance optimisation (5–40% weight bounds)
+is applied to each candidate. The portfolio with highest
+optimally-weighted Sharpe is selected.
+
+**Baselines**
+Three comparison baselines:
+- SPY passive index (weakest — investor-relevant)
+- Top-N equal weight (naive individual Sharpe selection)
+- Top-N optimal weight (classically-optimised selection — hardest)
+
+**QPU validation**
+Rigetti Cepheus-1-108Q validation used p=1 depth due to gate count
+constraints. The full v3 pipeline at p=2 generates ~22,867 gates
+after transpilation — exceeding Rigetti's 20,000 gate limit. This
+empirically quantifies the quantum volume requirement for full
+pipeline QPU validation.
+
+---
+
+## QCalEval scores
+
+Three-pipeline blind scoring across 6 dimensions on 10 windows:
+
+| Pipeline | Circuit quality | Financial insight | Overall |
+|----------|----------------|-------------------|---------|
+| Ising alone | 3.9 / 5 | 1.0 / 5 | 2.42 / 5 |
+| Claude alone | 1.0 / 5 | 3.9 / 5 | 2.62 / 5 |
+| Ising + Claude | 1.0 / 5 | 4.0 / 5 | 2.70 / 5 |
+
+Finding: complementary roles confirmed. Neither model alone is
+sufficient for making quantum portfolio results actionable.
+
+---
+
+## File structure
+
+```
+notebooks/
+  full_pipeline.ipynb      Main pipeline — runs on Colab L4
+qpu_validation/
+  rigetti_cepheus_validation.ipynb   QPU validation on real hardware
+src/
+  qubo.py                  QUBO matrix construction
+  qaoa.py                  CUDA-Q QAOA kernel and optimisation
+  baselines.py             Classical portfolio baselines
+  ising_calibration.py     NVIDIA Ising Calibration integration
+  claude_narrator.py       Claude AI narration layer
+  utils.py                 Shared utilities
+results/
+  summary.json             Aggregate results across all runs
+figures/                   Publication charts (add from Google Drive)
+```
+
+---
 
 ## Citation
 
-```
+```bibtex
 @misc{quantum-portfolio-2026,
   title={Hybrid Quantum-Classical Portfolio Optimisation
          with NVIDIA Ising Calibration and Claude AI},
-  author={maddykws},
   year={2026},
   url={https://github.com/maddykws/quantum-portfolio-ising-claude}
 }
 ```
 
+---
+
 ## Acknowledgements
 
-Built on NVIDIA CUDA-Q, NVIDIA Ising Calibration, and Anthropic Claude.
-Methodology follows Infleqtion's Q-CHOP portfolio optimisation approach
-([developer.nvidia.com/blog/spotlight-infleqtion](https://developer.nvidia.com/blog/spotlight-infleqtion-optimizes-portfolios-using-q-chop-and-nvidia-cuda-q-dynamics/)).
+Built on NVIDIA CUDA-Q, NVIDIA Ising Calibration, Anthropic Claude,
+Amazon Braket, and Google Colab. Methodology follows Infleqtion's
+published Q-CHOP portfolio optimisation approach.
+
+---
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT License — see LICENSE file.

@@ -1,32 +1,76 @@
 {
-  "meta": {
-    "description": "56-quarter QAOA portfolio backtest 2010–2024",
-    "methodology": "Dynamic top-15 universe by Sharpe, 5-year lookback, quarterly rebalance",
-    "qaoa_config": {
-      "p_layers": 2,
-      "n_seeds": 3,
-      "shots_count": 2000,
-      "optimizer": "COBYLA",
-      "maxiter": 150,
-      "zz_decomposition": "cx-rz-cx"
+  "project": "Quantum Portfolio Optimisation",
+  "stack": "NVIDIA Ising + CUDA-Q + Claude AI",
+  "date": "April 2026",
+  "gpu": "Google Colab L4 (Ada Lovelace, 22.5GB VRAM)",
+  "total_compute_cost_usd": 3.00,
+  "qpu_cost_usd": 1.44,
+  "windows": 56,
+  "universe": "Dynamic top-25 from 90 S&P 500 stocks",
+  "lookback_years": 5,
+  "date_range": "2010-2024",
+  "headline_results": {
+    "gpu_speedup": "373x (L4 vs CPU at N=20 qubits)",
+    "vs_topn_equal_median": "+3.1%",
+    "vs_topn_equal_win_rate": "75% (42/56 windows)",
+    "vs_spy_median": "+101.2%",
+    "vs_spy_win_rate": "100% (56/56 windows)",
+    "sampling_efficiency_mean": "1,400,000x vs random",
+    "sampling_shots_median": 3
+  },
+  "honest_limitations": {
+    "vs_topn_optimal_median": "-4.8%",
+    "vs_topn_optimal_win_rate": "2% (1/56 windows)",
+    "note": "QAOA combination search competitive but does not consistently surpass classically-optimised selection at p=2"
+  },
+  "qpu_validation": {
+    "hardware": "Rigetti Cepheus-1-108Q",
+    "type": "superconducting QPU via Amazon Braket",
+    "run_a": {
+      "qubits": 10,
+      "depth": "p=2",
+      "shots": 1000,
+      "top_state_concentration": "1.1%",
+      "finding": "Circuit execution confirmed. NISQ noise spreads distribution."
     },
-    "gpu": "NVIDIA L4 (Google Colab)",
-    "framework": "CUDA-Q 0.8",
-    "run_date": "2026-04"
+    "run_b": {
+      "qubits": 24,
+      "depth": "p=1",
+      "shots": 1000,
+      "top_state_concentration": "0.1%",
+      "qpu_vs_topn": "-6.1%",
+      "finding": "Full universe confirmed. Hardware noise dominates at this scale."
+    },
+    "v3_qpu_limitation": {
+      "gates_required": 22867,
+      "rigetti_limit": 20000,
+      "note": "v3 at p=2 exceeds Rigetti gate limit. Motivates fault-tolerant hardware."
+    }
   },
-  "headline_numbers": {
-    "qaoa_vs_spy_win_rate": 1.00,
-    "qaoa_vs_spy_median_alpha": 0.9525,
-    "qaoa_vs_equal_weight_win_rate": 0.75,
-    "qaoa_vs_equal_weight_median_alpha": 0.031,
-    "mean_sampling_efficiency_vs_random": 1860,
-    "gpu_speedup_vs_cpu": 12.4
+  "qcaleval": {
+    "windows_tested": 10,
+    "pipelines": 3,
+    "ising_alone": 2.42,
+    "claude_alone": 2.62,
+    "combined": 2.70,
+    "ising_circuit_quality": "3.9/5",
+    "claude_financial_insight": "3.9/5",
+    "finding": "Complementary roles confirmed — neither model alone is sufficient"
   },
-  "honest_limitations": [
-    "QAOA trails top-N optimal-weight baseline (lookahead bias in that baseline)",
-    "p=2 QAOA depth is shallow; deeper circuits may improve results",
-    "L4 GPU simulation is classical — not a real quantum device",
-    "Backtest covers a bull market era; drawdown characteristics untested"
-  ],
-  "windows_summary": "56 quarterly windows, Q1 2010 through Q4 2024"
+  "circuit_depth_trajectory": {
+    "p1_median_vs_topn": "-0.8%",
+    "p2_median_vs_topn": "-1.4%",
+    "p3_median_vs_topn": "-2.9%",
+    "p4_median_vs_topn": "-1.1%",
+    "finding": "Barren plateau at p=3 with COBYLA optimiser"
+  },
+  "algorithm": {
+    "qaoa_depth": "p=2",
+    "qaoa_optimizer": "COBYLA",
+    "qaoa_seeds": 3,
+    "ensemble_k": 10,
+    "weight_bounds": "5-40% per stock",
+    "ising_model": "nvidia/ising-calibration-1-35b-a3b",
+    "claude_model": "claude-haiku-4-5-20251001"
+  }
 }

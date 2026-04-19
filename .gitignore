@@ -1,11 +1,23 @@
-# API keys — never commit these
+# API keys — never commit
 .env
 *.env
 secrets.py
 config_secret.py
+api_keys.py
 
-# Colab credentials
-/content/
+# Large data files — too big for GitHub
+*.csv
+broad_returns.csv
+spy_returns.csv
+results_56w*.json
+results_56w_p2*.json
+results_56w_v3*.json
+circuit_trajectory.json
+ising_calibration_56w.json
+qcaleval_3pipeline.json
+qpu_validation*.json
+saved_params.json
+task_id*.txt
 
 # Python
 __pycache__/
@@ -16,24 +28,22 @@ __pycache__/
 dist/
 build/
 .eggs/
+*.egg
 
-# Jupyter checkpoints
+# Jupyter
 .ipynb_checkpoints/
-*.ipynb_checkpoints
-
-# Large data and result files
-*.csv
-results_56w*.json
-results_56w_p2*.json
-results_56w_v3*.json
-circuit_trajectory.json
-ising_calibration_56w.json
-qcaleval_3pipeline.json
+*/.ipynb_checkpoints/
 
 # OS
 .DS_Store
+.DS_Store?
 Thumbs.db
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Colab credentials
+/content/

@@ -15,7 +15,7 @@
 | vs top-N equal weight (56 windows) | **+3.1% median · 75% win rate** |
 | vs SPY passive benchmark | **+101.2% median · 100% win rate** |
 | Sampling efficiency vs random search | **1.4 million ×** |
-| QPU validation | **Rigetti Cepheus-1-108Q · 108-qubit** |
+| QPU validation | **Rigetti Cepheus-1-108Q · 108-qubit superconducting** |
 
 Validated across **56 quarterly S&P 500 portfolio constructions**
 spanning a **14-year backtest (2010–2024)**.
@@ -60,10 +60,10 @@ Take the 10 most-measured quantum states
 Run classical weight optimisation on each candidate
 Pick the portfolio with highest Sharpe ratio
 
-Step 4 — Narration
-Send measurement distribution to NVIDIA Ising Calibration
+Step 4 — Assessment and narration
+Send QAOA measurement distribution to NVIDIA Ising Calibration
 Generate investment memo with Claude AI
-Ising handles circuit quality. Claude handles finance.
+Ising assesses circuit output quality. Claude handles financial translation.
 ```
 
 ---
@@ -93,24 +93,33 @@ exactly how much better the hardware needs to get.
 
 ## The Ising + Claude finding
 
-I ran a structured evaluation comparing three pipelines: NVIDIA Ising
-Calibration alone, Claude alone, and the two combined. The result was
-clean and not what I expected.
+NVIDIA Ising Calibration launched on April 16, 2026 — four days before this
+project was submitted. It is a 35B parameter vision-language model designed
+to interpret quantum processor calibration outputs and automate QPU tuning.
 
-Ising scored 3.9/5 on circuit quality assessment. It correctly
-identified measurement concentration and convergence quality. It scored
-1.0/5 on financial insight because it is not designed for that.
+I applied it to a different domain: assessing QAOA measurement distribution
+quality in portfolio optimisation circuits. This is outside its intended QPU
+calibration use case, but the model reads quantum experiment charts regardless
+of whether the experiment is a qubit calibration run or a portfolio QAOA circuit.
 
-Claude scored 3.9/5 on financial insight and clarity. It translated
-quantum results into actionable investment language. It scored 1.0/5
-on circuit quality because it had no access to the measurement data.
+I then evaluated three pipeline configurations using NVIDIA's QCalEval benchmark
+— the world's first evaluation framework for quantum calibration models, released
+alongside Ising Calibration. I applied QCalEval's six scoring dimensions to
+portfolio circuit outputs instead of QPU calibration outputs:
 
-The combined pipeline scored highest on completeness — the one dimension
-that requires both quantum assessment and financial translation.
+| Pipeline | Circuit quality | Financial insight | Overall |
+|----------|----------------|-------------------|---------|
+| Ising Calibration alone | 3.9 / 5 | 1.0 / 5 | 2.42 / 5 |
+| Claude alone | 1.0 / 5 | 3.9 / 5 | 2.62 / 5 |
+| Ising + Claude combined | — | 4.0 / 5 | 2.70 / 5 |
 
-The finding: neither model alone is sufficient for making quantum results
-useful to practitioners. Ising and Claude serve genuinely non-overlapping
-roles.
+The finding: in this new application domain, Ising Calibration and Claude AI
+serve genuinely complementary roles. Ising reads the circuit output and assesses
+measurement quality. Claude translates results into financial language.
+Neither alone is sufficient for making quantum portfolio results actionable.
+
+This is an early exploration of Ising Calibration beyond its intended QPU
+calibration domain — not a claim about its intended use case.
 
 ---
 
@@ -166,7 +175,7 @@ jupyter notebook notebooks/full_pipeline.ipynb
 | Component | What it does |
 |-----------|-------------|
 | NVIDIA CUDA-Q | Quantum circuit simulation on GPU |
-| NVIDIA Ising Calibration | Assesses circuit measurement quality |
+| NVIDIA Ising Calibration (NIM) | Interprets QAOA measurement distribution quality |
 | Claude AI (Anthropic) | Writes investment committee memos |
 | yfinance | Downloads S&P 500 historical prices |
 | scipy | Classical mean-variance weight optimisation |
@@ -194,6 +203,12 @@ shows -4.8% and is also reported.
 cx-rz-cx rather than the rzz gate, making it compatible with all
 CUDA-Q versions without modification.
 
+**Ising Calibration domain note.** NVIDIA Ising Calibration is designed
+for QPU calibration — tuning quantum processor noise. This project applies
+it to QAOA circuit output assessment in a financial application, which is
+outside its original design domain. Results should be interpreted as an
+early domain extension experiment rather than a validated production use case.
+
 ---
 
 ## File structure
@@ -202,12 +217,12 @@ CUDA-Q versions without modification.
 notebooks/
   full_pipeline.ipynb        Main pipeline — runs on Colab L4
 qpu_validation/
-  rigetti_cepheus_validation.ipynb   Real QPU runs
+  rigetti_cepheus_validation.ipynb   Real QPU runs on Rigetti Cepheus-1-108Q
 src/
   qubo.py                    QUBO matrix construction
   qaoa.py                    CUDA-Q kernel and optimisation
   baselines.py               Classical comparison baselines
-  ising_calibration.py       NVIDIA Ising Calibration calls
+  ising_calibration.py       NVIDIA Ising Calibration NIM integration
   claude_narrator.py         Claude AI narration layer
   utils.py                   Ensemble selection and utilities
 results/
@@ -232,11 +247,11 @@ figures/                     Publication charts
 
 ## Acknowledgements
 
-This project builds on NVIDIA CUDA-Q, NVIDIA Ising Calibration,
-Anthropic Claude, Amazon Braket, and Google Colab. The portfolio
-optimisation methodology follows Infleqtion's published Q-CHOP
-approach. The QCalEval evaluation framework was developed for this
-project.
+Built on NVIDIA CUDA-Q, NVIDIA Ising Calibration, Anthropic Claude,
+Amazon Braket, and Google Colab. Portfolio optimisation methodology
+follows Infleqtion's published Q-CHOP approach. Pipeline evaluation
+uses NVIDIA's QCalEval benchmark framework, applied here to a new
+domain beyond its original QPU calibration design.
 
 ---
 

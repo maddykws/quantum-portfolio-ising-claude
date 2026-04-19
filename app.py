@@ -448,7 +448,7 @@ INDIVIDUAL RETURNS
                         )
                         memo = response.content[0].text
                         st.session_state["memo"] = memo
-                        st.session_state["memo_quarter"] = sel2
+                        st.session_state["memo_quarter_label"] = sel2
                     except Exception as e:
                         st.error(f"Error: {e}")
 
@@ -456,7 +456,7 @@ INDIVIDUAL RETURNS
         if "memo" in st.session_state:
             st.markdown(f"""
             <div style="margin-top:8px">
-              <div class="section-title">Investment Committee Memo — {st.session_state.get('memo_quarter','')}</div>
+              <div class="section-title">Investment Committee Memo — {st.session_state.get('memo_quarter_label','')}</div>
               <div class="memo-box">{st.session_state['memo']}</div>
             </div>""", unsafe_allow_html=True)
         elif not gen_btn:
